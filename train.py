@@ -13,7 +13,7 @@ from data import TextDataset
 from configuration import config
 from util import Record, save_var, get_file_list, list_to_csv, shrink, save_txt
 
-
+# region
 # Set the random seed
 LUCKY_NUM = 666666
 torch.manual_seed(LUCKY_NUM)
@@ -23,7 +23,11 @@ np.random.seed(LUCKY_NUM)
 # plt.ion()
 torch.cuda.set_device(config.deviceID)
 # set the work path
+# endregion
+
 PATH = config.path
+
+# region
 if not os.path.isdir(PATH):
     os.makedirs(PATH)
 # Parameters used in the net
@@ -31,10 +35,14 @@ ERROR_PER = config.ERROR_PER
 NE = config.ne  # number of ensemble
 GAMMA = config.GAMMA
 T = config.T
+# endregion
+
 # Load data and initialize enn net
 text = TextDataset()
 # Set the loss function
 criterion = torch.nn.MSELoss()
+
+# region
 INFO = {
     "train len": config.train_len,
     "shrink len": config.shrink_len,
@@ -55,7 +63,7 @@ INFO = {
 }
 with open('{}/Info.json'.format(PATH), 'w', encoding='utf-8') as f:
     json.dump(INFO, f, ensure_ascii=False)
-
+# endregion
 
 # train the net, the result will be the net parameters and saved as pickle
 def train(net_enn, input_, target, feature_name=''):

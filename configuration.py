@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import torch
 
-
 class DefaultConfiguration:
 
     def __init__(self):
@@ -35,7 +34,7 @@ class DefaultConfiguration:
         self.test_ID = [6, ]
         self.data_prefix = 'data/vertical_all_A{}.csv'
         self.well_ID = 'A4'
-        self.experiment_ID = '032' \
+        self.experiment_ID = '1' \
                              ''
         self.deviceID = 0
 
@@ -47,6 +46,5 @@ class DefaultConfiguration:
         else:
             self.use_gpu = False
         self.text_path = 'data/vertical_all_{}.xls'.format(self.well_ID)
-
 
 config = DefaultConfiguration()
