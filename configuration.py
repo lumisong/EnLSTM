@@ -37,7 +37,7 @@ class DefaultConfiguration:
         self.well_ID = 'A4'
         self.experiment_ID = '032' \
                              ''
-        self.deviceID = 1
+        self.deviceID = 0
 
         self.path = 'Experiments/{}'.format(self.experiment_ID)
         self.info = "Exp{}-{}-{}-{}-{}".format(self.experiment_ID, str(self.hid_dim),
