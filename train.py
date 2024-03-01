@@ -1,3 +1,11 @@
+import comet_ml
+
+experiment = comet_ml.Experiment(
+    api_key = "w9z2jMikkCGUFnqrVmTtWrtZU",
+    project_name = "EnLSTM",
+    workspace = "lumisong"
+)
+
 import numpy as np
 import torch
 from torch.autograd import Variable
@@ -13,34 +21,58 @@ from data import TextDataset
 from configuration import config
 from util import Record, save_var, get_file_list, list_to_csv, shrink, save_txt
 
+# 使用exeriment记录参数
+
+
+
 # region
 # Set the random seed
 LUCKY_NUM = 666666
 torch.manual_seed(LUCKY_NUM)
 torch.cuda.manual_seed(LUCKY_NUM)
 np.random.seed(LUCKY_NUM)
+
+# 记录 random seed
+experiment.log_parameter("LUCKY_NUM", 666666)
+
 # initialize matplotlib and CUDA
 # plt.ion()
 torch.cuda.set_device(config.deviceID)
+
+# 记录GPU使用情况
+experiment.log_other("GPU", torch.cuda.get_device_name(config.deviceID))
 # set the work path
 # endregion
 
 PATH = config.path
 
+# 记录路径
+experiment.log_other("PATH", PATH)
+
 # region
 if not os.path.isdir(PATH):
     os.makedirs(PATH)
+    experiment.log_parameter("new_directory_created", True)
 # Parameters used in the net
 ERROR_PER = config.ERROR_PER
-NE = config.ne  # number of ensemble
+experiment.log_parameter("ERROR_PER", ERROR_PER)
+NE = config.ne # number of ensemble
+experiment.log_parameter("NE", NE)
 GAMMA = config.GAMMA
+experiment.log_parameter("GAMMA", GAMMA)
 T = config.T
+experiment.log_parameter("T", T)
+
 # endregion
 
 # Load data and initialize enn net
 text = TextDataset()
-# Set the loss function
+experiment.log_parameter("TextDataset_class", text.__class__.__name__)
+# Assuming TextDataset has an attribute 'data_size' or similar, log it
+experiment.log_parameter("TextDataset_data_size", text.data_size)
+
 criterion = torch.nn.MSELoss()
+experiment.log_parameter("MSELoss_class", criterion.__class__.__name__)
 
 # region
 INFO = {
@@ -61,9 +93,13 @@ INFO = {
     "Weight": enn.ENN.W,
     "Lamuda": lamuda.Lamuda.L
 }
+for key, value in INFO.items():
+    experiment.log_parameter(key, value)
 with open('{}/Info.json'.format(PATH), 'w', encoding='utf-8') as f:
     json.dump(INFO, f, ensure_ascii=False)
 # endregion
+
+experiment.end()
 
 # train the net, the result will be the net parameters and saved as pickle
 def train(net_enn, input_, target, feature_name=''):
@@ -213,6 +249,7 @@ def test(enn_net, feature_name='', draw_result=False):
 
 
 def run():
+    
     for epoch in range(config.epoch):
         print(epoch)
         while config.input_dim+1 <= len(config.columns):
