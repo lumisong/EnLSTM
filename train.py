@@ -69,7 +69,7 @@ experiment.log_parameter("T", T)
 text = TextDataset()
 experiment.log_parameter("TextDataset_class", text.__class__.__name__)
 # Assuming TextDataset has an attribute 'data_size' or similar, log it
-experiment.log_parameter("TextDataset_data_size", text.data_size)
+experiment.log_parameter("TextDataset_data_size", text)
 
 criterion = torch.nn.MSELoss()
 experiment.log_parameter("MSELoss_class", criterion.__class__.__name__)
